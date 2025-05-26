@@ -109,7 +109,7 @@ def main(script_args, training_args, model_args):
     #############################
     # Initialize the GRPO trainer
     #############################
-    optimizer = AdamW(model.parameter(), lr = training_args.learning_rate, betas = (training_args.adam_beta1, training_args.adam_beta2), weight_decay=training_args.weight_decay)
+    optimizer = AdamW(model.parameters(), lr = training_args.learning_rate, betas = (training_args.adam_beta1, training_args.adam_beta2), weight_decay=training_args.weight_decay)
     scheduler = get_linear_schedule_with_warmup(optimizer, training_args.num_warmup_steps, training_args.num_training_steps, last_epoch = -1)
     trainer = GRPOTrainer(
         model=model,
