@@ -28,7 +28,7 @@ from open_r1.utils.callbacks import get_callbacks
 from open_r1.utils.wandb_logging import init_wandb_training
 from trl import GRPOTrainer, ModelConfig, TrlParser, get_peft_config
 from c_adamw import AdamW
-from transformers import get_linear_schedule_with_warmup
+from transformers import get_cosine_schedule_with_warmup
 logger = logging.getLogger(__name__)
 
 
@@ -111,7 +111,7 @@ def main(script_args, training_args, model_args):
     #############################
     optimizer = AdamW(model.parameters(), lr = training_args.learning_rate, betas = (training_args.adam_beta1, training_args.adam_beta2), weight_decay=training_args.weight_decay)
     num_training_steps = len(dataset[script_args.dataset_train_split]) // (training_args.world_size * training_args.per_device_train_batch_size * training_args.gradient_accumulation_steps)
-    scheduler = get_linear_schedule_with_warmup(optimizer, training_args.get_warmup_steps(num_training_steps), num_training_steps, last_epoch = -1)
+    scheduler = get_cosine_schedule_with_warmup(optimizer, int(training_args.warmup_ratio * num_training_steps), num_training_steps, last_epoch = -1)
     trainer = GRPOTrainer(
         model=model,
         reward_funcs=reward_funcs,
