@@ -115,7 +115,7 @@ class AdamW(Optimizer):
                 denom = (exp_avg_sq.sqrt() / math.sqrt(bias_correction2)).add_(group["eps"])
                 # compute norm gradient
                 mask = (exp_avg * grad > 0).to(grad.dtype)
-                mask.div_(mask.mean().clamp_(min=1e-3))
+                mask.div_(torch.sqrt(mask.mean().clamp_(min=1e-3)))
                 norm_grad = (exp_avg * mask) / denom
                 p.add_(norm_grad, alpha=-step_size)
         return loss
