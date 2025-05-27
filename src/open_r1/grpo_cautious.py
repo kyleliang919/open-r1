@@ -111,7 +111,7 @@ def main(script_args, training_args, model_args):
     #############################
     optimizer = AdamW(model.parameters(), lr = training_args.learning_rate, betas = (training_args.adam_beta1, training_args.adam_beta2), weight_decay=training_args.weight_decay)
     num_training_steps = len(dataset[script_args.dataset_train_split]) // (training_args.world_size * training_args.gradient_accumulation_steps)
-    scheduler = get_cosine_with_min_lr_schedule_with_warmup(optimizer, int(training_args.warmup_ratio * num_training_steps), num_training_steps, last_epoch = -1, min_lr_ratio = training_args.min_lr_ratio)
+    scheduler = get_cosine_with_min_lr_schedule_with_warmup(optimizer, int(training_args.warmup_ratio * num_training_steps), num_training_steps, last_epoch = -1, min_lr_ratio = training_args.lr_scheduler_kwargs["min_lr_ratio"])
     trainer = GRPOTrainer(
         model=model,
         reward_funcs=reward_funcs,
